@@ -14,13 +14,13 @@ for($i=1;$i<=30;$i++) {
     $_product->setName("Produs Test nr. $i");
     $_product->setTypeId('simple');
     $_product->setAttributeSetId(4);
-    $_product->setSku('"prod-test-$i"');
+    $_product->setSku("prod-test-$i");
     $_product->setWebsiteIds([1]);
     $_product->setVisibility(4);
-    $_product->setPrice([1]);
-    $_product->setImage('/img/1000x1000.png');
-    $_product->setSmallImage('/img/1000x1000.png');
-    $_product->setThumbnail('/img/1000x100.png');
+    $_product->setPrice(rand(1,1000));
+    $_product->setImage('img/1000x1000.png');
+    $_product->setSmallImage('img/1000x1000.png');
+    $_product->setThumbnail('img/1000x100.png');
     $_product->setStockData([
             'use_config_manage_stock' => 0, //'Use config settings' checkbox
             'manage_stock' => 1, //manage stock
@@ -31,5 +31,6 @@ for($i=1;$i<=30;$i++) {
         ]
     );
     $_product->save();
+    echo "Created #$i".PHP_EOL;
 }
 ?>
