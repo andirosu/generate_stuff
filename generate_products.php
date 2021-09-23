@@ -1,6 +1,6 @@
 <?php
 use Magento\Framework\App\Bootstrap;
-include('../app/bootstrap.php');
+include(dirname(__FILE__).'/../app/bootstrap.php');
 $bootstrap = Bootstrap::create(BP, $_SERVER);
 
 $objectManager = $bootstrap->getObjectManager();
