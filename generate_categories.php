@@ -2,7 +2,7 @@
 
 use \Magento\Framework\App\Bootstrap;
 
-include(dirname(__FILE__).'/../app/bootstrap.php');
+include(dirname(__FILE__) . '/../app/bootstrap.php');
 $bootstrap     = Bootstrap::create(BP, $_SERVER);
 $objectManager = $bootstrap->getObjectManager();
 $url           = \Magento\Framework\App\ObjectManager::getInstance();
@@ -26,40 +26,38 @@ echo 'rootNodeId: ' . $rootNodeId . " ";
 $rootCat  = $objectManager->get('Magento\Catalog\Model\Category');
 $cat_info = $rootCat->load($rootNodeId);
 
-$categories = [
-    "Amenajari Interioare",
-    "Constructii",
-    "Curatenie si Intretinere",
-    "Electrice",
-    "Organe Asamblare",
-    "Sanitare",
-    "Scule si Unelte",
-    "Piatra Naturala, Gresie, Faianta",
-    "Hidro",
-    "Incalzire"
+
+$roots = [
+   32
 ];
+foreach ($roots as $root) {
+    $cat_info   = $rootCat->load($root);
+    $categories = [];
+    for ($i = 0; $i < 7; $i++) {
+        $categories[] = uniqid($cat_info->getName() . " ");
+    }
 
-foreach ($categories as $cat) {
-
-    $name            = ucfirst(trim($cat));
-    $url             = strtolower($cat);
-    $cleanurl        = trim(preg_replace('/ +/', '', preg_replace('/[^A-Za-z0-9 ]/', '', urldecode(html_entity_decode(strip_tags($url))))));
-    $categoryFactory = $objectManager->get('\Magento\Catalog\Model\CategoryFactory');
+    foreach ($categories as $cat) {
+        $name            = ucfirst(trim($cat));
+        $url             = strtolower($cat);
+        $cleanurl        = trim(preg_replace('/ +/', '', preg_replace('/[^A-Za-z0-9 ]/', '', urldecode(html_entity_decode(strip_tags($url))))));
+        $categoryFactory = $objectManager->get('\Magento\Catalog\Model\CategoryFactory');
 /// Add a new sub category under root category
-    $categoryTmp = $categoryFactory->create();
-    $categoryTmp->setName($name);
-    $categoryTmp->setIsActive(true);
-    $categoryTmp->setUrlKey($cleanurl);
-    $categoryTmp->setData('description', 'description');
-    $categoryTmp->setParentId($rootCat->getId());
-    $mediaAttribute = ['image', 'small_image', 'thumbnail'];
-    $categoryTmp->setImage('/m2.png', $mediaAttribute, true, false);// Path pub/meida/catalog/category/m2.png
-    $categoryTmp->setStoreId($storeId);
-    $categoryTmp->setPath($rootCat->getPath());
-    try {
-        $categoryTmp->save();
-        echo "saved $name!" . $categoryTmp->getId() . PHP_EOL;
-    } catch (Exception $e) {
-        \Incognito\Debug\Helper\Dumper::dd($e->getMessage());
+        $categoryTmp = $categoryFactory->create();
+        $categoryTmp->setName($name);
+        $categoryTmp->setIsActive(true);
+        $categoryTmp->setUrlKey($cleanurl);
+        $categoryTmp->setData('description', 'description');
+        $categoryTmp->setParentId($cat_info->getId());
+//    $mediaAttribute = ['image', 'small_image', 'thumbnail'];
+//    $categoryTmp->setImage('/m2.png', $mediaAttribute, true, false);// Path pub/meida/catalog/category/m2.png
+        $categoryTmp->setStoreId($storeId);
+        $categoryTmp->setPath($cat_info->getPath());
+        try {
+            $categoryTmp->save();
+            echo "saved $name!" . $categoryTmp->getId() . PHP_EOL;
+        } catch (Exception $e) {
+            \Incognito\Debug\Helper\Dumper::dd($e->getMessage());
+        }
     }
 }
